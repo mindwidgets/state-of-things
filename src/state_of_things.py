@@ -1,4 +1,10 @@
 import time
+from .observers import Observers
+
+try:
+    from typing import List
+except ImportError:
+    pass
 
 
 class State:
@@ -16,49 +22,73 @@ class State:
         return self
 
 
+class ThingObserver:
+    def state_changed(self, old_state: State, new_state: State):
+        pass
+
+
 class Thing:
-    def __init__(self, logging=False):
-        self.logging = logging
 
-        self.state: State = None
-        self.previous_state: State = None
-        self.time_last_update: float = 0
-        self.time_ellapsed: float = 0
-        self.time_active: float = 0
+    def __init__(self, initial_state: State):
+        assert initial_state, "initial_state is required"
 
-    def __log(self, message):
-        if self.logging:
-            print(message)
+        self.__observers = Observers()
+
+        self.__current_state: State = None
+        self.__previous_state: State = None
+        self.__time_last_update: float = 0
+        self.__time_ellapsed: float = 0
+        self.__time_active: float = 0
+
+        self.go_to_state(initial_state)
 
     def go_to_state(self, state: State):
-        if self.state == state:
+        assert state, "state can not be None"
+
+        if self.__current_state == state:
             return
 
-        if self.state:
-            self.__log(f"{self.__class__.__name__} STATE <- {self.state.name}")
-            self.state.exit(self)
-            self.previous_state = self.state
+        if self.__current_state:
+            self.__current_state.exit(self)
 
-        self.state = state
-        self.__log(f"{self.__class__.__name__} STATE -> {self.state.name}")
+        self.__previous_state = self.__current_state
+        self.__current_state = state
 
-        self.time_last_update = time.monotonic()
-        self.time_ellapsed = 0
-        self.time_active = 0
-        self.state.enter(self)
-
-    def start(self):
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement start(self) to set an initial state using self.go_to_state"
+        self.observers.notify(
+            "state_changed", self.__previous_state, self.__current_state
         )
 
-    def update(self):
-        if self.state:
-            now = time.monotonic()
-            self.time_ellapsed = now - self.time_last_update
-            self.time_last_update = now
-            self.time_active += self.time_ellapsed
+        self.__time_last_update = time.monotonic()
+        self.__time_ellapsed = 0
+        self.__time_active = 0
+        self.__current_state.enter(self)
 
-            next_state = self.state.update(self)
-            if next_state != self.state:
-                self.go_to_state(next_state)
+    def update(self):
+        now = time.monotonic()
+        self.__time_ellapsed = now - self.__time_last_update
+        self.__time_last_update = now
+        self.__time_active += self.__time_ellapsed
+
+        next_state = self.__current_state.update(self)
+        if next_state != self.__current_state:
+            self.go_to_state(next_state)
+
+    @property
+    def current_state(self) -> State:
+        return self.__current_state
+
+    @property
+    def previous_state(self) -> State:
+        return self.__previous_state
+
+    @property
+    def time_ellapsed(self) -> float:
+        return self.__time_ellapsed
+
+    @property
+    def time_active(self) -> float:
+        return self.__time_active
+
+    @property
+    def observers(self) -> Observers:
+        return self.__observers
