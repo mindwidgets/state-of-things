@@ -1,51 +1,88 @@
-from src.state_of_things import State, ThingObserver, Thing
+import pytest
+from src.state_of_things import State, Thing
+
+
+class EnterExitTrackingState(State):
+    """Records when a State is entered or exited."""
+
+    def __init__(self) -> None:
+        self.__entered_thing: Thing = None
+        self.__exited_thing: Thing = None
+
+    def enter(self, thing: Thing):
+        self.__entered_thing = thing
+
+    def exit(self, thing: Thing):
+        self.__exited_thing = thing
+
+    def assert_entered(self, thing: Thing):
+        assert self.__entered_thing == thing
+
+    def assert_not_entered(self):
+        assert self.__entered_thing is None
+
+    def assert_exited(self, thing: Thing):
+        assert self.__exited_thing == thing
+
+    def assert_not_exited(self):
+        assert self.__exited_thing is None
 
 
 class TestThing:
 
-    def test_state_change_notifies_attached_observers(self):
-        class StateChangeObserver(ThingObserver):
-            def state_changed(self, old_state: State, new_state: State):
-                self.old_state = old_state
-                self.new_state = new_state
+    def test_initial_state_is_entered(self):
+        """Things must always enter an initial State when created."""
+        initial_state = EnterExitTrackingState()
+        thing = Thing(initial_state)
 
-        observers = [StateChangeObserver(), StateChangeObserver()]
-        first_state = State()
-        second_state = State()
+        assert thing.current_state == initial_state
+        assert thing.previous_state is None
 
-        thing = Thing(first_state)
+        initial_state.assert_entered(thing)
+        initial_state.assert_not_exited()
 
-        for observer in observers:
-            thing.observers.attach(observer)
+    def test_initial_state_is_required(self):
+        with pytest.raises(AssertionError) as expected_error:
+            Thing(initial_state=None)
 
-        thing.go_to_state(second_state)
+        assert str(expected_error.value) == "initial_state is required"
 
-        for observer in observers:
-            assert observer.old_state == first_state
-            assert observer.new_state == second_state
-
-    def test_custom_thing_observers(self):
-        class CustomThingObserver(ThingObserver):
-            def custom_event(self, some_data: str):
-                self.some_data = some_data
-
-        initial_state = State()
-
-        class CustomThingState(State):
-            def enter(self, thing: Thing):
-                thing.observers.notify("custom_event", "test")
-
-        custom_state = CustomThingState()
+    def test_state_change_exits_and_enters_states(self):
+        """
+        When changing States, the current State should exit before
+        the new State is entered.
+        """
+        initial_state = EnterExitTrackingState()
+        new_state = EnterExitTrackingState()
 
         thing = Thing(initial_state)
-        observer = CustomThingObserver()
-        thing.observers.attach(observer)
-        observer_without_event = ThingObserver()
-        thing.observers.attach(observer_without_event)
-        thing.go_to_state(custom_state)
+        thing.go_to_state(new_state)
 
-        assert observer.some_data == "test"
+        assert thing.current_state == new_state
+        assert thing.previous_state == initial_state
 
-    # test update of state and previous state
-    # test update enter/exit
-    # test time properties
+        initial_state.assert_exited(thing)
+        new_state.assert_entered(thing)
+        new_state.assert_not_exited()
+
+    def test_going_to_current_state_does_not_change_state(self):
+        """
+        When changing States, if the new State is the same as the
+        current State then do not enter or exit States.
+        """
+        initial_state = EnterExitTrackingState()
+
+        thing = Thing(initial_state)
+
+        # go to the current State (should not trigger a change)
+        thing.go_to_state(initial_state)
+
+        assert thing.current_state == initial_state
+        assert thing.previous_state is None
+
+        initial_state.assert_entered(thing)
+        initial_state.assert_not_exited()
+
+    # update - test time properties
+    # update - test state staying the same
+    # update - test state causing move to another state
