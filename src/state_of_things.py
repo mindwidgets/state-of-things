@@ -3,7 +3,7 @@ from .observers import Observers
 
 try:
     from typing import List
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 
