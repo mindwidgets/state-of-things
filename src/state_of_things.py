@@ -1,11 +1,6 @@
 import time
 from .observers import Observers
 
-try:
-    from typing import List
-except ImportError:  # pragma: no cover
-    pass
-
 
 class State:
     @property
