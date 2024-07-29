@@ -5,18 +5,22 @@ class StateChangeObserver(ThingObserver):
     """Records when a state change is observed."""
 
     def __init__(self) -> None:
+        self.__thing: Thing = None
         self.__old_state: State = None
         self.__new_state: State = None
 
-    def state_changed(self, old_state: State, new_state: State):
+    def state_changed(self, thing: Thing, old_state: State, new_state: State):
+        self.__thing = thing
         self.__old_state = old_state
         self.__new_state = new_state
 
-    def assert_notified(self, old_state: State, new_state: State):
+    def assert_notified(self, thing: Thing, old_state: State, new_state: State):
+        assert self.__thing == thing
         assert self.__old_state == old_state
         assert self.__new_state == new_state
 
     def assert_not_notified(self):
+        assert self.__thing is None
         assert self.__old_state is None
         assert self.__new_state is None
 
@@ -60,6 +64,8 @@ class TestThingObservers:
         new_state = State()
 
         thing = Thing(initial_state)
+        # go to intial state
+        thing.update()
 
         for observer in observers:
             thing.observers.attach(observer)
@@ -67,7 +73,7 @@ class TestThingObservers:
         thing.go_to_state(new_state)
 
         for observer in observers:
-            observer.assert_notified(initial_state, new_state)
+            observer.assert_notified(thing, initial_state, new_state)
 
     def test_custom_events_can_be_observed(self):
         """

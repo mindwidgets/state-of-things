@@ -30,12 +30,17 @@ class EnterExitTrackingState(State):
 
 class TestThing:
 
-    def test_initial_state_is_entered(self):
-        """Things must always enter an initial State when created."""
+    def test_initial_state_is_entered_on_first_update(self):
+        """Things must always enter an initial State on first update."""
         initial_state = EnterExitTrackingState()
         thing = Thing(initial_state)
 
-        assert thing.current_state == initial_state
+        assert thing.current_state is None
+        assert thing.previous_state is None
+
+        thing.update()
+
+        assert thing.current_state is initial_state
         assert thing.previous_state is None
 
         initial_state.assert_entered(thing)
@@ -56,6 +61,9 @@ class TestThing:
         new_state = EnterExitTrackingState()
 
         thing = Thing(initial_state)
+        # go to initial state
+        thing.update()
+
         thing.go_to_state(new_state)
 
         assert thing.current_state == new_state

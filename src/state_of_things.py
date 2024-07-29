@@ -76,7 +76,7 @@ class Thing:
     @property
     def name(self):
         return self.__name
-    
+
     @property
     def current_state(self) -> State:
         return self.__current_state
