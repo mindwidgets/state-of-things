@@ -86,3 +86,5 @@ class TestThing:
     # update - test time properties
     # update - test state staying the same
     # update - test state causing move to another state
+    # time ellapsed and active
+    # add missing pydocs

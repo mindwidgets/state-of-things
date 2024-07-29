@@ -18,14 +18,16 @@ class State:
 
 
 class ThingObserver:
-    def state_changed(self, old_state: State, new_state: State):
+    def state_changed(self, thing: "Thing", old_state: State, new_state: State):
         pass
 
 
 class Thing:
 
-    def __init__(self, initial_state: State):
+    def __init__(self, initial_state: State, name: str = None):
         assert initial_state, "initial_state is required"
+        self.__initial_state = initial_state
+        self.__name = name if name is not None else type(self).__name__
 
         self.__observers = Observers()
 
@@ -34,8 +36,6 @@ class Thing:
         self.__time_last_update: float = 0
         self.__time_ellapsed: float = 0
         self.__time_active: float = 0
-
-        self.go_to_state(initial_state)
 
     def go_to_state(self, state: State):
         assert state, "state can not be None"
@@ -49,9 +49,11 @@ class Thing:
         self.__previous_state = self.__current_state
         self.__current_state = state
 
-        self.observers.notify(
-            "state_changed", self.__previous_state, self.__current_state
-        )
+        # only notify for change from initial state
+        if self.__previous_state:
+            self.observers.notify(
+                "state_changed", self, self.__previous_state, self.__current_state
+            )
 
         self.__time_last_update = time.monotonic()
         self.__time_ellapsed = 0
@@ -59,6 +61,9 @@ class Thing:
         self.__current_state.enter(self)
 
     def update(self):
+        if self.__current_state is None:
+            self.go_to_state(self.__initial_state)
+
         now = time.monotonic()
         self.__time_ellapsed = now - self.__time_last_update
         self.__time_last_update = now
@@ -68,6 +73,10 @@ class Thing:
         if next_state != self.__current_state:
             self.go_to_state(next_state)
 
+    @property
+    def name(self):
+        return self.__name
+    
     @property
     def current_state(self) -> State:
         return self.__current_state
