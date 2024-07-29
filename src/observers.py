@@ -11,7 +11,7 @@ class Observers:
     """
 
     def __init__(self) -> None:
-        self._observers: List = []
+        self.__observers: List = []
 
     def attach(self, observer: object):
         """
@@ -21,7 +21,7 @@ class Observers:
         Args:
             observer (object): the observer to attach.
         """
-        self._observers.append(observer)
+        self.__observers.append(observer)
 
     def detach(self, observer: object):
         """
@@ -31,7 +31,7 @@ class Observers:
         Args:
             observer (object): the observer to detach.
         """
-        self._observers.remove(observer)
+        self.__observers.remove(observer)
 
     def notify(self, event_name: str, *params: object):
         """
@@ -43,7 +43,7 @@ class Observers:
             event_name (str): event that has occurred.
             params (*object): optional event data
         """
-        for observer in self._observers:
+        for observer in self.__observers:
             handler = getattr(observer, event_name, None)
             if callable(handler):
                 handler(*params)

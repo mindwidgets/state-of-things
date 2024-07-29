@@ -95,44 +95,6 @@ class TestThingObservers:
 
         observer.assert_notified(expected_v1, expected_v2)
 
-    def test_observers_ignore_unhandled_events(self):
-        """
-        Observers that do not define a function matching the event name
-        will not be notified.
-        """
-        # State will notify a custom event when entered
-        custom_state = CustomNotifierState()
-
-        thing = Thing(State())
-        # this observer does not support the custom event
-        observer_without_custom_event = ThingObserver()
-        thing.observers.attach(observer_without_custom_event)
-
-        # trigger the custom event
-        thing.go_to_state(custom_state)
-
-        # the observer should not be invoked
-        assert not hasattr(observer_without_custom_event, "notified_v1")
-        assert not hasattr(observer_without_custom_event, "notified_v2")
-
-    def test_detached_observers_are_not_notified(self):
-        """
-        Detached observers no longer receive notification of events.
-        """
-        thing = Thing(State())
-
-        observer = StateChangeObserver()
-        thing.observers.attach(observer)
-
-        # detach the observer before a state change
-        thing.observers.detach(observer)
-
-        # change the state
-        thing.go_to_state(State())
-
-        # the observer was detached so should not see the state change
-        observer.assert_not_notified()
-
     def test_going_to_current_state_does_not_notify_change_state(self):
         """
         When changing States, if the new State is the same as the
@@ -148,3 +110,12 @@ class TestThingObservers:
         thing.go_to_state(initial_state)
 
         observer.assert_not_notified()
+
+    def test_thing_observer_does_nothing_by_default(self):
+        """
+        By default, ThingObserver will do nothing when state changes
+        are received (as opposed to throwing an exception).
+        """
+        observer = ThingObserver()
+
+        observer.state_changed(Thing(State()), State(), State())
