@@ -107,19 +107,15 @@ class Thing:
         self.__time_ellapsed: float = 0
         self.__time_active: float = 0
 
-    def __go_to_state(self, state: State):
+    def __go_to_state(self, new_state: State):
         """
         Change the Thing to a new State. Notifies all observers of the
         State change if moving from a previous State.
 
         Args:
-            state (State): the target State for this Thing
+            new_state (State): the target State for this Thing
         """
-        assert state, "state can not be None"
-
-        # the State hasn't changed, don't do anything
-        if self.__current_state == state:
-            return
+        assert new_state, "new_state can not be None"
 
         # if changing from a previous State, exit it
         if self.__current_state:
@@ -127,7 +123,7 @@ class Thing:
 
         # update the Thing's state
         self.__previous_state = self.__current_state
-        self.__current_state = state
+        self.__current_state = new_state
 
         # only notify for change from initial state
         if self.__previous_state:
