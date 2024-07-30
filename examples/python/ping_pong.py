@@ -1,12 +1,15 @@
 """Simple example that ping-pongs between two States every 2 seconds.
-
+    
 The example shows:
 - How to use the States class pattern to keep track of valid States 
     (see PingPongStates)
 - How to change between States (see PingState.update and 
     PongState.update)
 - How to track ellapsed time within a State (see thing.time_active usage)
-- How to observer State changes (see LoggingObserver)
+- How to observer State changes (see LoggingObserver). State change
+    observers are typically only used for logging purposes. Code external
+    to the Thing should not have logic that references the internal 
+    States of a Thing.
 """
 
 import time
@@ -70,6 +73,8 @@ PingPongStates.pong = PongState()
 
 
 class LoggingObserver(ThingObserver):
+    """Prints a message when State changes occur."""
+
     def state_changed(self, thing: Thing, old_state: State, new_state: State):
         print(
             f"State of {thing.name} changed from {old_state.name} to {new_state.name}"
