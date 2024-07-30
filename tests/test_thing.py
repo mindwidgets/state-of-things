@@ -1,31 +1,6 @@
 import pytest
-from src.state_of_things import State, Thing
-
-
-class EnterExitTrackingState(State):
-    """Records when a State is entered or exited."""
-
-    def __init__(self) -> None:
-        self.__entered_thing: Thing = None
-        self.__exited_thing: Thing = None
-
-    def enter(self, thing: Thing):
-        self.__entered_thing = thing
-
-    def exit(self, thing: Thing):
-        self.__exited_thing = thing
-
-    def assert_entered(self, thing: Thing):
-        assert self.__entered_thing == thing
-
-    def assert_not_entered(self):
-        assert self.__entered_thing is None
-
-    def assert_exited(self, thing: Thing):
-        assert self.__exited_thing == thing
-
-    def assert_not_exited(self):
-        assert self.__exited_thing is None
+from src.state_of_things import Thing
+from .fixtures.state import *
 
 
 class TestThing:
@@ -57,14 +32,13 @@ class TestThing:
         When changing States, the current State should exit before
         the new State is entered.
         """
-        initial_state = EnterExitTrackingState()
+
         new_state = EnterExitTrackingState()
+        initial_state = ImmediateChangeState(next_state=new_state)
 
         thing = Thing(initial_state)
-        # go to initial state
+        # go to initial state, which then changes to the new state
         thing.update()
-
-        thing.go_to_state(new_state)
 
         assert thing.current_state == new_state
         assert thing.previous_state == initial_state
@@ -78,12 +52,12 @@ class TestThing:
         When changing States, if the new State is the same as the
         current State then do not enter or exit States.
         """
-        initial_state = EnterExitTrackingState()
+        initial_state = NeverChangeState()
 
         thing = Thing(initial_state)
 
-        # go to the current State (should not trigger a change)
-        thing.go_to_state(initial_state)
+        # go to the initial State (should not trigger a change)
+        thing.update()
 
         assert thing.current_state == initial_state
         assert thing.previous_state is None
