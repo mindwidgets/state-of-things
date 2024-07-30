@@ -1,4 +1,5 @@
 import pytest
+import time
 from src.state_of_things import Thing
 from .fixtures.state import *
 
@@ -65,8 +66,60 @@ class TestThing:
         initial_state.assert_entered(thing)
         initial_state.assert_not_exited()
 
-    # update - test time properties
-    # update - test state staying the same
-    # update - test state causing move to another state
-    # time ellapsed and active
-    # add missing pydocs
+    def test_time_ellapsed_between_updates(self):
+        """
+        The time ellapsed between updates to a Thing can be accessed
+        by a State.
+        """
+
+        time_tracking_state = TimeTrackingState()
+
+        thing = Thing(time_tracking_state)
+        # go to initial State
+        thing.update()
+
+        sleep_time = 0.75
+        time.sleep(sleep_time)
+
+        thing.update()
+
+        # assert that time ellapsed is within margin of error from the
+        # expected time
+        assert time_tracking_state.time_ellapsed - sleep_time < 0.05
+
+    def test_time_active_after_multiple_updates(self):
+        """
+        The total time active in a State can be accessed by the
+        State.
+        """
+        time_tracking_state = TimeTrackingState()
+
+        thing = Thing(time_tracking_state)
+        # go to initial State
+        thing.update()
+
+        sleep_time = 0.25
+        sleep_count = 4
+        for _ in range(sleep_count):
+            time.sleep(sleep_time)
+            thing.update()
+
+        # assert that time active is within margin of error from the
+        # expected time
+        expected_active_time = sleep_time * sleep_count
+        assert time_tracking_state.time_active - expected_active_time < 0.05
+
+    def test_thing_name_defaults_to_class_name(self):
+        class ExpectedNameThing(Thing):
+            pass
+
+        thing = ExpectedNameThing(State())
+
+        assert thing.name == ExpectedNameThing.__name__
+
+    def test_thing_name_can_be_overridden(self):
+        expected_thing_name = "OverriddenThingName"
+
+        thing = Thing(State(), name=expected_thing_name)
+
+        assert thing.name == expected_thing_name
