@@ -107,10 +107,10 @@ class Thing:
         self.__time_ellapsed: float = 0
         self.__time_active: float = 0
 
-    def go_to_state(self, state: State):
+    def __go_to_state(self, state: State):
         """
-        Manually change the Thing to a new State. Notifies all observers
-        of the State change if moving from a previous State.
+        Change the Thing to a new State. Notifies all observers of the
+        State change if moving from a previous State.
 
         Args:
             state (State): the target State for this Thing
@@ -151,7 +151,7 @@ class Thing:
         """
         # if the Thing is not in it's initial State, change to it
         if self.__current_state is None:
-            self.go_to_state(self.__initial_state)
+            self.__go_to_state(self.__initial_state)
 
         # update time tracking properties
         now = time.monotonic()
@@ -162,7 +162,7 @@ class Thing:
         # update the current State
         next_state = self.__current_state.update(self)
         if next_state != self.__current_state:
-            self.go_to_state(next_state)
+            self.__go_to_state(next_state)
 
     @property
     def name(self) -> str:

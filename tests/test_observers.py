@@ -1,20 +1,5 @@
 from src.state_of_things import Observers
-
-
-class CapturingObserver:
-    """Records when a test event is observed."""
-
-    def __init__(self) -> None:
-        self.__captured_params = None
-
-    def test_event(self, *params):
-        self.__captured_params = params
-
-    def assert_notified(self, *params):
-        assert self.__captured_params == params
-
-    def assert_not_notified(self):
-        assert self.__captured_params is None
+from .fixtures.observer import *
 
 
 class TestObservers:
