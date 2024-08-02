@@ -1,3 +1,6 @@
+REM SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+REM
+REM SPDX-License-Identifier: MIT
 @ECHO OFF
 
 pushd %~dp0

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 import time
 import pytest
 from src.state_of_things import Thing, State

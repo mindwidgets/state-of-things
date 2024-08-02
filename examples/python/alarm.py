@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 """Example of an Alarm that will wait for a while, loop between the
 alarm going off and snoozing a number of times, and then exiting
 the application.

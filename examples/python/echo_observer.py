@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 """Example using Observers as a stand-alone feature.
 
 The example shows:

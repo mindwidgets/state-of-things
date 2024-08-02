@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 """Simple example that ping-pongs between two States every 2 seconds.
 
 The example shows:

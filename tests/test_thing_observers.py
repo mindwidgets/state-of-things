@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 from src.state_of_things import State, Thing, ThingObserver
 from .fixtures.observer import (
     StateChangeObserver,
