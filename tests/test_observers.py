@@ -1,9 +1,8 @@
 from src.state_of_things import Observers
-from .fixtures.observer import *
+from .fixtures.observer import CapturingObserver
 
 
 class TestObservers:
-
     def test_attached_observer_is_notified(self):
         """
         When an observer is attached and has a function definition

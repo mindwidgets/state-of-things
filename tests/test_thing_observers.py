@@ -1,6 +1,10 @@
 from src.state_of_things import State, Thing, ThingObserver
-from .fixtures.observer import *
-from .fixtures.state import *
+from .fixtures.observer import (
+    StateChangeObserver,
+    CustomNotifierState,
+    CustomThingObserver,
+)
+from .fixtures.state import ImmediateChangeState, NeverChangeState
 
 
 class TestThingObservers:
