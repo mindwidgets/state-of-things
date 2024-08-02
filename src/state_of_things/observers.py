@@ -41,7 +41,7 @@ class Observers:
 
         Args:
             event_name (str): event that has occurred.
-            params (*object): optional event data
+            params (\*object): optional event data.
         """
         for observer in self.__observers:
             handler = getattr(observer, event_name, None)
