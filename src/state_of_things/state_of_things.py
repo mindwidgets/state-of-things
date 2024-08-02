@@ -1,63 +1,80 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
+"""
+`state_of_things.state_of_things`
+================================================================================
+
+Base classes used to implement complex state machines. Each `Thing`
+starts in an initial `State`, and then updates to the thing's state
+execute logic and determine whether or not to change to another state.
+
+See examples directory for ideas on usage.
+
+* Author(s): Aaron Silinskas
+
+"""
+
 import time
 from .observers import Observers
 
 
 class State:
     """
-    Represents a State that a Thing can enter and exit. The State can
-    transition a Thing into another State when it is updated.
+    Represents a state that a `Thing` can enter and exit. The state can
+    transition a `Thing` into another state when it is updated.
     """
 
     @property
     def name(self):
-        """The State's name, defaulting to the class name."""
+        """The state's name, defaulting to the class name."""
         return type(self).__name__
 
     def enter(self, thing: "Thing"):
         """
-        Called when a Thing enters this State. Typically used for
-        one-time setup where State-specific context is added to the
+        Called when a `Thing` enters this state. Typically used for
+        one-time setup where state-specific context is added to the
         Thing.
 
         Args:
-            thing (Thing): the Thing that entered this State.
+            thing (Thing): the `Thing` that entered this state.
         """
         pass
 
     def exit(self, thing: "Thing"):
         """
-        Called when a Thing exists this State. Typically used to clean
-        up resources initialized when the State is entered.
+        Called when a `Thing` exists this state. Typically used to clean
+        up resources initialized when the state is entered.
 
         Args:
-            thing (Thing): the Thing that exited this State.
+            thing (Thing): the `Thing` that exited this state.
         """
         pass
 
     def update(self, thing: "Thing") -> "State":
         """
-        Called periodically while a Thing is in this State. This
-        function determines whether the Thing should remain in this
-        State or change to another State.
+        Called periodically while a `Thing` is in this state. This
+        function determines whether the `Thing` should remain in this
+        state or change to another state.
 
-        Often the Thing's time_ellapsed and time_active properties are
-        referenced when a Thing should transition to another State after
-        a given amount of time.
+        Often :attr:`Thing.time_ellapsed` and :attr:`Thing.time_active`
+        are referenced when a `Thing` should transition to another state
+        after a given amount of time.
 
         Args:
-            thing (Thing): the Thing to update in this State
+            thing (Thing): the `Thing` to update in this state.
 
         Returns:
-            State: the next State for the Thing, or this State if the
-            Thing should remain unchanged.
+            State: the next state for the Thing, or this state if the
+            `Thing` should remain unchanged.
         """
         return self
 
 
 class ThingObserver:
     """
-    Implement the state_changed function of this class to receive
-    notifications when a Thing changes State. All Thing observers
+    Implement the :attr:`state_changed` function of this class to receive
+    notifications when a `Thing` changes state. All `Thing` observers
     should inherited from this class.
 
     Logging state changes to stdout is common for debugging purposes.
@@ -65,34 +82,31 @@ class ThingObserver:
 
     def state_changed(self, thing: "Thing", old_state: State, new_state: State):
         """
-        Notified when a Thing changes from one State to another.
+        Notified when a `Thing` changes from one `State` to another.
 
         Args:
-            thing (Thing): the Thing that changed State.
-            old_state (State): the State that the Thing exited.
-            new_state (State): the State that the Thing entered.
+            thing (Thing): the `Thing` that changed state.
+            old_state (State): the `State` that the `Thing` exited.
+            new_state (State): the `State` that the `Thing` entered.
         """
         pass
 
 
 class Thing:
     """
-    A Thing represents an object that can only be in one State at a
-    time. It holds all global and per-State context needed by States to
-    update and transition between States.
-
-    Things can be manually set to a State via go_to_state, but ideally
-    the States should internally manage the correct State for the Thing.
+    Represents an object that can only be in one `State` at a time. It
+    holds all global and state-specific context needed by `State`
+    implementations to update and transition between states.
     """
 
     def __init__(self, initial_state: State, name: str = None):
         """
-        Constructor that stores the initial State but does not change
-        to it until update is called.
+        Constructor that stores the initial `State` but does not change
+        to it until :attr:`update` is called.
 
         Args:
-            initial_state (State): the initial State for this Thing
-            name (str, optional): the name of this Thing, usually for
+            initial_state (State): the initial `State` for this thing
+            name (str, optional): the name of this thing, usually for
             logging. Defaults to the class name.
         """
         assert initial_state, "initial_state is required"
@@ -109,11 +123,11 @@ class Thing:
 
     def __go_to_state(self, new_state: State):
         """
-        Change the Thing to a new State. Notifies all observers of the
-        State change if moving from a previous State.
+        Change this thing to a new `State`. Notifies all observers of the
+        state change if moving from a previous `State`.
 
         Args:
-            new_state (State): the target State for this Thing
+            new_state (State): the target `State` for this thing.
         """
         assert new_state, "new_state can not be None"
 
@@ -121,7 +135,7 @@ class Thing:
         if self.__current_state:
             self.__current_state.exit(self)
 
-        # update the Thing's state
+        # update the thing's state
         self.__previous_state = self.__current_state
         self.__current_state = new_state
 
@@ -141,9 +155,12 @@ class Thing:
 
     def update(self):
         """
-        Updates the time tracking properties of this Thing, and then
-        updates the State. If the State update returns a new State,
-        then this method calls go_to_state to change to it.
+        Updates :attr:`time_ellapsed` and :attr:`time_active` of this
+        thing, and then updates the `State` by calling
+        :attr:`State.update` of :attr:`current_state`. If
+        :attr:`State.update` returns a different `State` than the
+        current one, then this thing will transition to the returned
+        `State`.
         """
         # if the Thing is not in it's initial State, change to it
         if self.__current_state is None:
@@ -163,31 +180,31 @@ class Thing:
     @property
     def name(self) -> str:
         """
-        Name of this Thing, defaulting to class name but can be
+        Name of this thing, defaulting to class name but can be
         manually set via the constructor.
 
         Returns:
-            str: the name of this Thing.
+            str: the name of this thing.
         """
         return self.__name
 
     @property
     def current_state(self) -> State:
         """
-        The current State of this Thing.
+        The current `State` of this thing.
 
         Returns:
-            State: the current State, or None if it does not have one.
+            State: the current `State`, or None if it does not have one.
         """
         return self.__current_state
 
     @property
     def previous_state(self) -> State:
         """
-        The previous State of this Thing.
+        The previous `State` of this thing.
 
         Returns:
-            State: the previous State, or None if it has not changed
+            State: the previous `State`, or None if it has not changed
             States.
         """
         return self.__previous_state
@@ -195,7 +212,7 @@ class Thing:
     @property
     def time_ellapsed(self) -> float:
         """
-        The amount of time that has ellapsed since this Thing's last
+        The amount of time that has ellapsed since this thing's last
         update call.
 
         Returns:
@@ -206,11 +223,11 @@ class Thing:
     @property
     def time_active(self) -> float:
         """
-        The total amount of time that this Thing has been in the current
-        State.
+        The total amount of time that this thing has been in the current
+        `State`.
 
         Returns:
-            float: the amount of time active in the current State, in
+            float: the amount of time active in the current `State`, in
             seconds.
         """
         return self.__time_active
@@ -218,16 +235,16 @@ class Thing:
     @property
     def observers(self) -> Observers:
         """
-        The observers that will be notified by this Thing. For instance,
-        all observers that implement ThingObserver will be notified when
-        this Thing changes State.
+        The observers that will be notified by this `Thing`. For instance,
+        all observers that implement `ThingObserver` will be notified when
+        this `Thing` changes `State`.
 
-        Things can have custom observers that it's State implementations
-        can notify as needed. For instance, a button Thing may have an
+        Things can have custom observers that it's `State` implementations
+        can notify as needed. For instance, a button `Thing` may have an
         observer that is notified when the button is pressed or
         released.
 
         Returns:
-            Observers: this Thing's observers.
+            Observers: this `Thing`'s observers.
         """
         return self.__observers

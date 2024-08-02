@@ -27,4 +27,3 @@ Stand-alone Observers
 .. literalInclude:: ../examples/python/echo_observer.py
     :caption: examples/python/echo_observer.py
     :linenos:
-

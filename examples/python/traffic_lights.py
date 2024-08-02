@@ -1,11 +1,14 @@
-"""Traffic light example that supports caution mode and external 
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
+"""Traffic light example that supports caution mode and external
 control.
 
 This example shows:
 - How to externally control a Thing, but still allow the Thing to
     manage its State and transitions (see TrafficLightThing.should_go
     and TrafficLightThing.caution_mode).
-- How to provide custom strongly typed observers (see 
+- How to provide custom strongly typed observers (see
     TrafficLightObserver).
 """
 

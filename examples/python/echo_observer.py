@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 """Example using Observers as a stand-alone feature.
 
 The example shows:
@@ -10,22 +13,22 @@ from state_of_things import Observers
 class InputObserver:
     """Notified when input is received."""
 
-    def input_received(self, input: str):
+    def input_received(self, input_string: str):
         pass
 
 
 class LoggingObserver(InputObserver):
     """Logs the observed input."""
 
-    def input_received(self, input: str):
-        print(f"Observed: {input}")
+    def input_received(self, input_string: str):
+        print(f"Observed: {input_string}")
 
 
 class WordCountObserver(InputObserver):
     """Logs the number of words observed."""
 
-    def input_received(self, input: str):
-        print(f"Word Count: {len(input.split())}")
+    def input_received(self, input_string: str):
+        print(f"Word Count: {len(input_string.split())}")
 
 
 def main():

@@ -1,11 +1,18 @@
-import pytest
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
 import time
-from src.state_of_things import Thing
-from .fixtures.state import *
+import pytest
+from src.state_of_things import Thing, State
+from .fixtures.state import (
+    EnterExitTrackingState,
+    ImmediateChangeState,
+    NeverChangeState,
+    TimeTrackingState,
+)
 
 
 class TestThing:
-
     def test_initial_state_is_entered_on_first_update(self):
         """Things must always enter an initial State on first update."""
         initial_state = EnterExitTrackingState()

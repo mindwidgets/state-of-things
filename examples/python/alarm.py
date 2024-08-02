@@ -1,5 +1,8 @@
-"""Example of an Alarm that will wait for a while, loop between the 
-alarm going off and snoozing a number of times, and then exiting 
+# SPDX-FileCopyrightText: Copyright (c) 2024 Aaron Silinskas for Mindwidgets
+#
+# SPDX-License-Identifier: MIT
+"""Example of an Alarm that will wait for a while, loop between the
+alarm going off and snoozing a number of times, and then exiting
 the application.
 
 The example shows:
@@ -110,7 +113,7 @@ class TriggeredState(State):
     """Whoops every second and then snoozes."""
 
     def enter(self, thing: AlarmThing):
-        print(f"Alarm has triggered!")
+        print("Alarm has triggered!")
 
         # triggered_last_whoop was not formally declared on AlarmThing.
         # Be very careful when using this pattern, and only when the
