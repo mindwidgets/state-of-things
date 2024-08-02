@@ -22,7 +22,7 @@ State of Things is a python library to organize complex state machines.
 Installing from PyPI
 =====================
 
-On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
+On supported GNU/Linux systems like the Raspberry Pi, you can install the library locally `from
 PyPI <https://pypi.org/project/state-of-things/>`_.
 To install for current user:
 
