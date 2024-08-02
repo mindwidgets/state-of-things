@@ -6,7 +6,7 @@ __pycache__
 
 .tox
 /build
-/docs/build
+/docs/_build
 htmlcov
 *.egg-info
 
