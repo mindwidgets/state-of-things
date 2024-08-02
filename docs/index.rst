@@ -19,7 +19,8 @@ Table of Contents
     :caption: API Reference
     :maxdepth: 3
 
-    api
+    state-of-things
+    observers
 
 .. toctree::
     :caption: Tutorial
