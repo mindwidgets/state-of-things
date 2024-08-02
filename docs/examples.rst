@@ -20,3 +20,11 @@ Traffic Lights
 .. literalInclude:: ../examples/python/traffic_lights.py
     :caption: examples/python/traffic_lights.py
     :linenos:
+
+Stand-alone Observers
+---------------------
+
+.. literalInclude:: ../examples/python/echo_observer.py
+    :caption: examples/python/echo_observer.py
+    :linenos:
+
