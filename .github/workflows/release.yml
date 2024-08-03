@@ -11,7 +11,6 @@ on:
 jobs:
   upload-pypi:
     runs-on: ubuntu-latest
-    environment: release
     steps:
     - uses: actions/checkout@v3
     - name: Check For pyproject.toml
