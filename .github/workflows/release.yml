@@ -17,24 +17,19 @@ jobs:
       id: need-pypi
       run: |
         echo ::set-output name=pyproject-toml::$( find . -wholename './pyproject.toml' )
-    - name: Set up Python
-      if: contains(steps.need-pypi.outputs.pyproject-toml, 'pyproject.toml')
+    - name: Set up Python      
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.11'
     - name: Install dependencies
-      if: contains(steps.need-pypi.outputs.pyproject-toml, 'pyproject.toml')
       run: |
         python -m pip install --upgrade pip
         pip install --upgrade build twine
-    - name: Build and publish
-      if: contains(steps.need-pypi.outputs.pyproject-toml, 'pyproject.toml')
-      env:
-        TWINE_USERNAME: ${{ secrets.pypi_username }}
-        TWINE_PASSWORD: ${{ secrets.pypi_password }}
+    - name: Build
       run: |
         for file in $(find -not -path "./.*" -not -path "./docs*" \( -name "*.py" -o -name "*.toml" \) ); do
             sed -i -e "s/0.0.0+auto.0/${{github.event.release.tag_name}}/" $file;
         done;
         python -m build
-        twine upload dist/*
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
