@@ -8,7 +8,7 @@ The example shows:
     (see PingPongStates)
 - How to change between States (see PingState.update and
     PongState.update)
-- How to track ellapsed time within a State (see thing.time_active usage)
+- How to track elapsed time within a State (see thing.time_active usage)
 - How to observer State changes (see LoggingObserver). State change
     observers are typically only used for logging purposes. Code external
     to the Thing should not have logic that references the internal

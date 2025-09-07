@@ -73,9 +73,9 @@ class TestThing:
         initial_state.assert_entered(thing)
         initial_state.assert_not_exited()
 
-    def test_time_ellapsed_between_updates(self):
+    def test_time_elapsed_between_updates(self):
         """
-        The time ellapsed between updates to a Thing can be accessed
+        The time elapsed between updates to a Thing can be accessed
         by a State.
         """
 
@@ -90,9 +90,9 @@ class TestThing:
 
         thing.update()
 
-        # assert that time ellapsed is within margin of error from the
+        # assert that time elapsed is within margin of error from the
         # expected time
-        assert time_tracking_state.time_ellapsed - sleep_time < 0.05
+        assert time_tracking_state.time_elapsed - sleep_time < 0.05
 
     def test_time_active_after_multiple_updates(self):
         """

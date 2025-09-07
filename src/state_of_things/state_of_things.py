@@ -57,7 +57,7 @@ class State:
         function determines whether the `Thing` should remain in this
         state or change to another state.
 
-        Often :attr:`Thing.time_ellapsed` and :attr:`Thing.time_active`
+        Often :attr:`Thing.time_elapsed` and :attr:`Thing.time_active`
         are referenced when a `Thing` should transition to another state
         after a given amount of time.
 
@@ -118,7 +118,7 @@ class Thing:
         self.__current_state: State = None
         self.__previous_state: State = None
         self.__time_last_update: float = 0
-        self.__time_ellapsed: float = 0
+        self.__time_elapsed: float = 0
         self.__time_active: float = 0
 
     def __go_to_state(self, new_state: State):
@@ -147,7 +147,7 @@ class Thing:
 
         # reset time tracking properties
         self.__time_last_update = time.monotonic()
-        self.__time_ellapsed = 0
+        self.__time_elapsed = 0
         self.__time_active = 0
 
         # enter the new State
@@ -155,7 +155,7 @@ class Thing:
 
     def update(self):
         """
-        Updates :attr:`time_ellapsed` and :attr:`time_active` of this
+        Updates :attr:`time_elapsed` and :attr:`time_active` of this
         thing, and then updates the `State` by calling
         :attr:`State.update` of :attr:`current_state`. If
         :attr:`State.update` returns a different `State` than the
@@ -168,9 +168,9 @@ class Thing:
 
         # update time tracking properties
         now = time.monotonic()
-        self.__time_ellapsed = now - self.__time_last_update
+        self.__time_elapsed = now - self.__time_last_update
         self.__time_last_update = now
-        self.__time_active += self.__time_ellapsed
+        self.__time_active += self.__time_elapsed
 
         # update the current State
         next_state = self.__current_state.update(self)
@@ -210,15 +210,15 @@ class Thing:
         return self.__previous_state
 
     @property
-    def time_ellapsed(self) -> float:
+    def time_elapsed(self) -> float:
         """
-        The amount of time that has ellapsed since this thing's last
+        The amount of time that has elapsed since this thing's last
         update call.
 
         Returns:
-            float: the amount of ellapsed time, in seconds.
+            float: the amount of elapsed time, in seconds.
         """
-        return self.__time_ellapsed
+        return self.__time_elapsed
 
     @property
     def time_active(self) -> float:

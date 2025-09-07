@@ -54,21 +54,21 @@ class NeverChangeState(EnterExitTrackingState):
 
 
 class TimeTrackingState(State):
-    """Record time ellapsed and active each time the State is updated."""
+    """Record time elapsed and active each time the State is updated."""
 
     def __init__(self) -> None:
-        self.__time_ellapsed: float = None
+        self.__time_elapsed: float = None
         self.__time_active: float = None
 
     def update(self, thing: Thing) -> State:
-        self.__time_ellapsed = thing.time_ellapsed
+        self.__time_elapsed = thing.time_elapsed
         self.__time_active = thing.time_active
 
         return self
 
     @property
-    def time_ellapsed(self) -> float:
-        return self.__time_ellapsed
+    def time_elapsed(self) -> float:
+        return self.__time_elapsed
 
     @property
     def time_active(self) -> float:
