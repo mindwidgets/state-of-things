@@ -42,10 +42,25 @@ To install in a virtual environment in your current project:
 
     mkdir project-name && cd project-name
     python3 -m venv .venv
-    source .env/bin/activate
+    source .venv/bin/activate
     pip3 install state-of-things
 
 
 Documentation
 =============
 API documentation for this library can be found on `Read the Docs <https://state-of-things.readthedocs.io/>`_.
+
+Development
+===========
+
+To set up a development environment, clone the repository and install the development dependencies:
+.. code-block:: shell
+
+    git clone https://github.com/mindwidgets/state-of-things.git
+    cd state-of-things
+    pip install -r requirements-dev.txt
+
+Then you can run the build (including tests) with:
+.. code-block:: shell
+
+    tox
